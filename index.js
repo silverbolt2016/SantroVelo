@@ -1,21 +1,6 @@
 var Hapi = require('hapi');
 var Pg = require('pg');
 
-
-// var url = 'postgres://skjgcbructmcsn:QP75bgub3gRQighsb_DJjpRlS5@ec2-54-163-238-169.compute-1.amazonaws.com:5432/d883nmfvm6vc3m';
-
-// var databaseURL = url;
-
-// Pg.connect(databaseURL, function(err, client) {
-	
-// 	console.log(err)
-// 	  var query = client.query('SELECT * FROM your_table');
-
-// 	  query.on('row', function(row) {
-// 	    console.log(JSON.stringify(row));
-// 	  });
-// });
-
 var server = new Hapi.Server();
 server.connection({ port: process.env.PORT });
 
@@ -23,6 +8,7 @@ server.route({
     method: 'GET',
     path: '/',
     handler: function (request, reply) {
+
         reply('Hello, world!');
     }
 });
@@ -33,6 +19,22 @@ server.route({
     handler: function (request, reply) {
         reply('Hello, ' + encodeURIComponent(request.params.name) + '!');
     }
+});
+
+server.route({
+	method: 'GET',
+	path: '/db',
+	handler: function(request, reply) {
+		Pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+		    client.query('SELECT * FROM test_table', function(err, result) {
+		      	done();
+		      	if (err)
+		       		{ console.error(err); response.send("Error " + err); }
+		      	else
+		       		{ response.send(result.rows); }
+		    });
+		});
+	}
 });
 
 
