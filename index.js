@@ -17,7 +17,7 @@ Pg.connect(databaseURL, function(err, client) {
 });
 
 var server = new Hapi.Server();
-server.connection({ port: 3000 });
+server.connection({ port: process.env.PORT });
 
 server.route({
     method: 'GET',
