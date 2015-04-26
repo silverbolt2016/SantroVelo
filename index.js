@@ -40,7 +40,13 @@ server.route({
 	path: '/createDatabase',
 	handler: function(request, reply) {
 		Pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-		    client.query('create table test_table', function(err, result) {
+		    client.query('create table test_table (
+		    	ID int NOT NULL AUTO_INCREMENT,
+		    	LastName VARCHAR(255) NOT NULL,
+		    	FirstName VARCHAR(255) NOT NULL,
+		    	DateJoined DATE NOT NULL,
+		    	Phone VARCHAR(10) NOT NULL,
+		    	Valid BOOLEAN NOT NULL', function(err, result) {
 		      	done();
 
 		      	if (err) {
