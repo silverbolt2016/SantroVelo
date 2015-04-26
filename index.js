@@ -40,7 +40,7 @@ server.route({
 	path: '/createDatabase',
 	handler: function(request, reply) {
 		Pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-		    client.query('CREAT TABLE test_table (
+		    client.query('CREATE TABLE test_table (
 		    	ID int NOT NULL AUTO_INCREMENT,
 		    	LastName VARCHAR(255) NOT NULL,
 		    	FirstName VARCHAR(255) NOT NULL,
