@@ -59,7 +59,7 @@ server.route({
           });
       });
     },
-    description: 'Gets all the members of SantroVelo',
+    description: 'Gets all the members',
     tags: ['api']
   }
 });
@@ -98,7 +98,7 @@ server.route({
       
       });
     },
-    description: 'Gets a specific member of SantroVelo',
+    description: 'Gets a specific member based on row id',
     tags: ['api'],
     validate: {
       params: {
@@ -145,7 +145,7 @@ server.route({
         });
       });
     },
-    description: 'Adds a member to the SantroVelo database',
+    description: 'Add member',
     tags: ['api'],
     validate: {
       query: {
@@ -205,7 +205,7 @@ server.route({
         
       });
     },
-    description: 'Edit an existing member of the SantroVelo database',
+    description: 'Edit an existing member',
     tags: ['api'],
     validate: {
       params : {
@@ -250,11 +250,56 @@ server.route({
         });
       });
     },
-    description: 'Delete an existing member of the SantroVelo database',
+    description: 'Delete an existing member',
     tags: ['api'],
     validate : {
       params : {
         id : Joi.number().required()
+      }
+    }
+  }
+})
+
+server.route({
+  method: 'DELETE',
+  path: '/users',
+  config : {
+    handler: function(request, reply) {
+      if (request.query.areyousure != 'yes') {
+        reply({
+          status: 'failure',
+          message: 'areyousure query must be set to yes'
+        });
+      } else {
+        var query = 'DELETE FROM santro_test;';
+        Pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+          client.query(query, function(err, result) {
+            done();
+
+            var queryStatus;
+            var queryResult;
+
+            if (err) {
+              queryStatus = 'failure';
+              queryResult = 'All users unable to be deleted';
+            } else {
+              queryStatus = 'success';
+              queryResult = 'All users deleted successfully';
+            }
+
+            reply({
+              status: queryStatus,
+              message: queryResult
+            });
+          });
+        });
+      }
+    },
+    description: 'Delete all members',
+    tags: ['api'],
+    validate: {
+      query : {
+        areyousure : Joi.string().required()
       }
     }
   }
