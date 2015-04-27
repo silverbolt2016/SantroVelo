@@ -18,10 +18,11 @@ server.route({
 
 server.route({
 	method: 'GET',
-	path: '/db',
+	path: '/users',
 	handler: function(request, reply) {
 		Pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-		    client.query('SELECT * FROM test_table', function(err, result) {
+			// create table santro_test (id serial, LastName VARCHAR(255) NOT NULL, FirstName VARCHAR(255) NOT NULL, DateJoined DATE NOT NULL, Phone VARCHAR(10) NOT NULL, Valid BOOLEAN NOT NULL);
+		    client.query('SELECT * FROM santro_test', function(err, result) {
 		      	done();
 		      	if (err)
 		       	{ 
@@ -34,40 +35,6 @@ server.route({
 		});
 	}
 });
-
-server.route({
-	method: 'GET',
-	path: '/createDatabase',
-	handler: function(request, reply) {
-		Pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-			// var query = 'CREATE TABLE test_table (ID int NOT NULL AUTO_INCREMENT, LastName VARCHAR(255) NOT NULL, 	FirstName VARCHAR(255) NOT NULL, DateJoined DATE NOT NULL, Phone VARCHAR(10) NOT NULL, Valid BOOLEAN NOT NULL);';
-			var query = 'create table test_table2 (
-				id serial, 
-				LastName VARCHAR(255) NOT NULL, 	
-				FirstName VARCHAR(255) NOT NULL, 
-				DateJoined DATE NOT NULL, 
-				Phone VARCHAR(10) NOT NULL, 
-				Valid BOOLEAN NOT NULL);';
-		    client.query(query, function(err, result) {
-		      	done();
-
-		      	if (err) {
-		      		reply({ 
-	        			status: 'failure',
-	        			message: err
-	        		});
-		      	} else {
-		      		reply({ 
-	        			status: 'success',
-	        			message: result
-	        		});
-		      	}
-		      	
-		    });
-		});
-	}
-});
-
 
 server.start(function () {
     console.log('Server running at:', server.info.uri);
