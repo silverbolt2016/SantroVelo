@@ -43,7 +43,7 @@ server.route({
   config: {
     handler: function(request, reply) {
       Pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-        // create table santro_test (id serial, LastName VARCHAR(255) NOT NULL, FirstName VARCHAR(255) NOT NULL, DateJoined DATE NOT NULL, Phone VARCHAR(10) NOT NULL, Valid BOOLEAN NOT NULL);
+        // create table santro_test (id serial, lastname VARCHAR(255) NOT NULL, firstname VARCHAR(255) NOT NULL, datejoined DATE NOT NULL, phone VARCHAR(10) NOT NULL, valid BOOLEAN NOT NULL);
         var query = 'SELECT * FROM santro_test';
           client.query(query, function(err, result) {
               done();
@@ -110,7 +110,6 @@ server.route({
   }
 });
 
-
 server.route({
   method: 'POST',
   path: '/users',
@@ -157,6 +156,67 @@ server.route({
         phone: Joi.string().length(10).required()
           .description('e.g. 8043219876'),
         valid: Joi.boolean().required()
+      }
+    }
+  }
+})
+
+server.route({
+  method: 'PUT',
+  path: '/users/{id}',
+  config: {
+    handler: function(request, reply) {
+      var properties = [];
+      for (var key in request.query) {
+        if (request.query.hasOwnProperty(key)) {
+          properties.push(key);
+        }
+      }
+
+      var query = 'UPDATE santro_test SET ';
+      properties.forEach(function(elem, index) {
+        query += elem + '=\'' + request.query[elem] + '\'';
+        if (index < properties.length - 1) {
+          query +=', '
+        }
+      });
+
+      query += ' WHERE id=' + request.params.id + ';';
+
+      Pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+        client.query(query, function(err, result) {
+          done();
+
+          var queryStatus;
+          var queryResult;
+
+          if (err) {
+            queryStatus = 'failure';
+            queryResult = 'User unable to be updated';
+          } else {
+            queryStatus = 'success';
+            queryResult = 'User updated successfully';
+          }
+          reply({
+            status: queryStatus,
+            message: queryResult
+          })
+        });
+        
+      });
+    },
+    description: 'Edit an existing member of the SantroVelo database',
+    tags: ['api'],
+    validate: {
+      params : {
+        id : Joi.number().required()
+      },
+      query : {
+        firstname : Joi.string(),
+        lastname : Joi.string(),
+        datejoined : Joi.string().description('e.g. 2015-04-25'),
+        phone : Joi.string().length(10).description('e.g. 8043219876'),
+        valid : Joi.boolean()
       }
     }
   }
