@@ -1,6 +1,15 @@
 var Hapi = require('hapi');
 var Pg = require('pg');
 
+var pack = require('package'),
+    swaggerOptions = {
+        apiVersion: pack.version,
+        info: {
+          title: 'SantroVelo API Documentation',
+          description: 'All public routes for access to the SantroVelo userbase'
+        }
+    };
+
 var server = new Hapi.Server();
 server.connection({ port: process.env.PORT });
 
@@ -134,6 +143,17 @@ server.route({
 		});
 	}
 });
+
+server.register({
+        register: require('hapi-swagger'),
+        options: swaggerOptions
+    }, function (err) {
+        if (err) {
+            server.log(['error'], 'hapi-swagger load error: ' + err)
+        }else{
+            server.log(['start'], 'hapi-swagger interface loaded')
+        }
+    });
 
 server.start(function () {
     console.log('Server running at:', server.info.uri);
