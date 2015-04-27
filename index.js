@@ -2,9 +2,16 @@ var Hapi = require('hapi');
 var Joi = require('joi');
 var Pg = require('pg');
 
+var basePath;
+if (process.env.PRODUCTION == true) {
+  basePath = 'https://santro-velo.herokuapp.com'
+} else {
+  basePath = 'http://localhost:5000'
+}
+
 var pack = require('package'),
     swaggerOptions = {
-        basePath: 'https://santro-velo.herokuapp.com',
+        basePath: basePath,
         apiVersion: pack.version,
         info: {
           title: 'SantroVelo API Documentation',
@@ -13,7 +20,7 @@ var pack = require('package'),
     };
 
 var server = new Hapi.Server();
-server.connection({ port: process.env.PORT });
+server.connection({ port: process.env.PORT || 5000 });
 
 server.route({
     method: 'GET',
@@ -107,59 +114,74 @@ server.route({
 server.route({
   method: 'POST',
   path: '/users',
-  handler: function(request, reply) {
-    var payload = request.payload;
-    var invalid = '';
+  config: {
+    handler: function(request, reply) {
+      var payload = request.payload;
+      var invalid = '';
 
-    if (payload.firstname == '' || payload.firstname  == null ) {
-      invalid += 'firstname, ';
-    }
-    if (payload.lastname == '' || payload.lastname == null){
-      invalid += 'lastname, ';
-    } 
-    if (payload.datejoined == '' || payload.datejoined == null) {
-      invalid += 'datejoined, ';
-    }
-    if (payload.phone == '' || payload.phone == null) {
-      invalid += 'phone, ';
-    }
-    if (payload.valid       == '' || payload.valid      == null) {
-      invalid += 'valid'  
-    }
-    if (invalid != '') {
-      reply({
-            status: 'failure',
-            message: 'The following fields are required ' + invalid
-      });
-    } else {
-      Pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-  
-        var query = 'INSERT INTO santro_test (Firstname, Lastname, DateJoined, Phone, Valid) values (\'' + 
-          payload.firstname + '\',\'' +
-          payload.lastname + '\',\'' +
-          payload.datejoined + '\',\'' + 
-          payload.phone +'\',\'' +
-          payload.valid + '\');';
+      if (payload.firstname == '' || payload.firstname  == null ) {
+        invalid += 'firstname, ';
+      }
+      if (payload.lastname == '' || payload.lastname == null){
+        invalid += 'lastname, ';
+      } 
+      if (payload.datejoined == '' || payload.datejoined == null) {
+        invalid += 'datejoined, ';
+      }
+      if (payload.phone == '' || payload.phone == null) {
+        invalid += 'phone, ';
+      }
+      if (payload.valid       == '' || payload.valid      == null) {
+        invalid += 'valid'  
+      }
+      if (invalid != '') {
+        reply({
+              status: 'failure',
+              message: 'The following fields are required ' + invalid
+        });
+      } else {
+        Pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+    
+          var query = 'INSERT INTO santro_test (Firstname, Lastname, DateJoined, Phone, Valid) values (\'' + 
+            payload.firstname + '\',\'' +
+            payload.lastname + '\',\'' +
+            payload.datejoined + '\',\'' + 
+            payload.phone +'\',\'' +
+            payload.valid + '\');';
 
-        client.query(query, function(err, result) {
-          done();
+          client.query(query, function(err, result) {
+            done();
 
-          var queryStatus;
-          var queryResult;
-          
-          if (err) {
-            queryStatus = 'failure';
-            queryResult = 'The user could not be added';
-          } else {
-            queryStatus = 'success',
-            queryResult = 'The user has been added'
-          }
-          reply({
-            status: queryStatus,
-            message: queryResult
+            var queryStatus;
+            var queryResult;
+            
+            if (err) {
+              queryStatus = 'failure';
+              queryResult = 'The user could not be added';
+            } else {
+              queryStatus = 'success',
+              queryResult = 'The user has been added'
+            }
+            reply({
+              status: queryStatus,
+              message: queryResult
+            });
           });
         });
-      });
+      }
+    },
+    description: 'Adds a member to the SantroVelo database',
+    tags: ['api'],
+    validate: {
+      params: {
+        firstname: Joi.string().required(),
+        lastname: Joi.string().required(),
+        datejoined: Joi.string().required()
+          .description('e.g. 2015-04-25'),
+        phone: Joi.string().length(10).required()
+          .description('e.g. 8043219876'),
+        valid: Joi.boolean().required()
+      }
     }
   }
 })
