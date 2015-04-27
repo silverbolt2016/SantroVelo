@@ -116,64 +116,40 @@ server.route({
   path: '/users',
   config: {
     handler: function(request, reply) {
-      var payload = request.payload;
-      var invalid = '';
+      var payload = request.query;
+      Pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+  
+        var query = 'INSERT INTO santro_test (Firstname, Lastname, DateJoined, Phone, Valid) values (\'' + 
+          payload.firstname + '\',\'' +
+          payload.lastname + '\',\'' +
+          payload.datejoined + '\',\'' + 
+          payload.phone +'\',\'' +
+          payload.valid + '\');';
 
-      if (payload.firstname == '' || payload.firstname  == null ) {
-        invalid += 'firstname, ';
-      }
-      if (payload.lastname == '' || payload.lastname == null){
-        invalid += 'lastname, ';
-      } 
-      if (payload.datejoined == '' || payload.datejoined == null) {
-        invalid += 'datejoined, ';
-      }
-      if (payload.phone == '' || payload.phone == null) {
-        invalid += 'phone, ';
-      }
-      if (payload.valid       == '' || payload.valid      == null) {
-        invalid += 'valid'  
-      }
-      if (invalid != '') {
-        reply({
-              status: 'failure',
-              message: 'The following fields are required ' + invalid
-        });
-      } else {
-        Pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-    
-          var query = 'INSERT INTO santro_test (Firstname, Lastname, DateJoined, Phone, Valid) values (\'' + 
-            payload.firstname + '\',\'' +
-            payload.lastname + '\',\'' +
-            payload.datejoined + '\',\'' + 
-            payload.phone +'\',\'' +
-            payload.valid + '\');';
+        client.query(query, function(err, result) {
+          done();
 
-          client.query(query, function(err, result) {
-            done();
-
-            var queryStatus;
-            var queryResult;
-            
-            if (err) {
-              queryStatus = 'failure';
-              queryResult = 'The user could not be added';
-            } else {
-              queryStatus = 'success',
-              queryResult = 'The user has been added'
-            }
-            reply({
-              status: queryStatus,
-              message: queryResult
-            });
+          var queryStatus;
+          var queryResult;
+          
+          if (err) {
+            queryStatus = 'failure';
+            queryResult = 'The user could not be added';
+          } else {
+            queryStatus = 'success',
+            queryResult = 'The user has been added'
+          }
+          reply({
+            status: queryStatus,
+            message: queryResult
           });
         });
-      }
+      });
     },
     description: 'Adds a member to the SantroVelo database',
     tags: ['api'],
     validate: {
-      params: {
+      query: {
         firstname: Joi.string().required(),
         lastname: Joi.string().required(),
         datejoined: Joi.string().required()
