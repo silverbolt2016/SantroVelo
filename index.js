@@ -3,7 +3,7 @@ var Joi = require('joi');
 var Pg = require('pg');
 
 var basePath;
-if (process.env.PRODUCTION == true) {
+if (process.env.PRODUCTION) {
   basePath = 'https://santro-velo.herokuapp.com'
 } else {
   basePath = 'http://localhost:5000'
@@ -12,10 +12,10 @@ if (process.env.PRODUCTION == true) {
 var pack = require('package'),
     swaggerOptions = {
         basePath: basePath,
-        apiVersion: pack.version,
+        apiVersion: '0.1',
         info: {
           title: 'SantroVelo API Documentation',
-          description: 'All public routes for access to the SantroVelo userbase'
+          description: 'All public routes for access to the SantroVelo database'
         }
     };
 
