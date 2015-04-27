@@ -59,35 +59,46 @@ server.route({
 server.route({
   method: 'GET',
   path: '/users/{id}',
-  handler: function(request, reply) {
-    Pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-      
-      var query = 'SELECT * FROM santro_test WHERE ' + request.params.id + '=id';
-      var queryResult;
-      var queryStatus;
-
-      client.query(query, function(err, result) {
-        done();
-        if (err) {
-          queryResult = 'failure',
-          queryStatus = 'Query could not be completed'
-        } else {
-          queryResult = 'User not found';
-          queryStatus = 'failure';
-
-          if (result.rows.length > 0) {
-            queryResult = result.rows[0];
-            queryStatus = 'success';
-          } 
-          reply({
-            status: queryStatus,
-            message: queryResult
-          });
-        }
+  config: {
+    handler: function(request, reply) {
+      Pg.connect(process.env.DATABASE_URL, function(err, client, done) {
         
+        var query = 'SELECT * FROM santro_test WHERE ' + request.params.id + '=id';
+        var queryResult;
+        var queryStatus;
+
+        client.query(query, function(err, result) {
+          done();
+          if (err) {
+            queryResult = 'failure',
+            queryStatus = 'Query could not be completed'
+          } else {
+            queryResult = 'User not found';
+            queryStatus = 'failure';
+
+            if (result.rows.length > 0) {
+              queryResult = result.rows[0];
+              queryStatus = 'success';
+            } 
+            reply({
+              status: queryStatus,
+              message: queryResult
+            });
+          }
+          
+        });
+      
       });
-    
-    });
+    },
+    description: 'Gets a specific member of SantroVelo',
+    tags: ['api'],
+    validate: {
+      params: {
+        id: Joi.number()
+              .required()
+              .description('the member id')
+      }
+    }
   }
 });
 
