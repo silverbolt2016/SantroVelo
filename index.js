@@ -38,13 +38,19 @@ server.route({
         if (err) {
           reply({
             status: 'failure',
-            message: 'User not found'
+            message: 'Query could not be completed'
           })
         } else {
+          var queryResult = 'User not found';
+          var queryStatus = 'failure';
+          if (result.rows.length > 0) {
+            queryResult = result.rows[0];
+            queryStatus = 'success';
+          } 
           reply({
-            status: 'success',
-            message: result.rows
-          })  
+            status: queryStatus,
+            message: queryResult
+          });
         }
         
       });
@@ -65,10 +71,12 @@ server.route({
 		      	done();
 		      	if (err)
 		       	{ 
-		       		console.error(err); 
 		       		reply("Error " + err); 
 		       	} else { 
-		       		reply(result.rows); 
+		       		reply({
+                status: 'success',
+                message: result.rows
+              }); 
 		       	}
 		    });
 		});
