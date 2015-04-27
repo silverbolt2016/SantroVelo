@@ -222,6 +222,44 @@ server.route({
   }
 })
 
+server.route({
+  method: 'DELETE',
+  path: '/users/{id}',
+  config : {
+    handler: function(request, reply) {
+      var query = 'DELETE FROM santro_test WHERE id=\'' + request.params.id + '\';'
+      Pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+        client.query(query, function(err, result) {
+          done();
+
+          var queryStatus;
+          var queryResult;
+
+          if (err) {
+            queryStatus = 'failure';
+            queryResult = 'User unable to be deleted';
+          } else {
+            queryStatus = 'success';
+            queryResult = 'User deleted successfully';
+          }
+          reply({
+            status: queryStatus,
+            message: queryResult
+          })
+
+        });
+      });
+    },
+    description: 'Delete an existing member of the SantroVelo database',
+    tags: ['api'],
+    validate : {
+      params : {
+        id : Joi.number().required()
+      }
+    }
+  }
+})
+
 server.register({
         register: require('hapi-swagger'),
         options: swaggerOptions
