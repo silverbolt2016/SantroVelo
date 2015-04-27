@@ -4,7 +4,7 @@ var Pg = require('pg');
 
 var pack = require('package'),
     swaggerOptions = {
-        basePath: 'https://santro-velo.herokuapp.com'
+        basePath: 'https://santro-velo.herokuapp.com',
         apiVersion: pack.version,
         info: {
           title: 'SantroVelo API Documentation',
