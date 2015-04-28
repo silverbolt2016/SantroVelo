@@ -20,7 +20,7 @@ var pack = require('package'),
     };
 
 var server = new Hapi.Server();
-server.connection({ port: process.env.PORT || 5000 });
+server.connection({routes: {cors: true}, port: process.env.PORT || 5000 });
 
 server.route({
     method: 'GET',
@@ -299,7 +299,7 @@ server.route({
     tags: ['api'],
     validate: {
       query : {
-        areyousure : Joi.string().required()
+        areyousure : Joi.string().required().description('e.g. yes')
       }
     }
   }
