@@ -2,6 +2,12 @@ var Hapi = require('hapi');
 var Joi = require('joi');
 var Pg = require('pg');
 
+var queryServerDescription = 'The database to connect, default: santro_test';
+var createTableQuery = 'create table santro_test (id serial, lastname VARCHAR(255) NOT NULL, firstname VARCHAR(255) NOT NULL, datejoined DATE NOT NULL, phone VARCHAR(10) NOT NULL, valid BOOLEAN NOT NULL);';
+
+var defaultTable = 'santro_test';
+var userSelectedTable;
+
 var basePath;
 if (process.env.PRODUCTION) {
   basePath = 'https://santro-velo.herokuapp.com'
@@ -22,20 +28,14 @@ var pack = require('package'),
 var server = new Hapi.Server();
 server.connection({routes: {cors: true}, port: process.env.PORT || 5000 });
 
-server.route({
-    method: 'GET',
-    path: '/',
-    config: {
-      handler: function (request, reply) {
-
-        reply({ 
-        		status: 'success',
-        		message: 'Hello, world!'
-        	});
-      }
-    }
+server.ext('onRequest', function(request, reply) {
+  if (request.query == undefined) {
+    request.query = { database: defaultTable }
+  } else if (request.query != undefined && request.query.database == undefined) {
+    request.query.database = defaultTable;
+  }
+  reply.continue();
 });
-
 
 server.route({
   method: 'GET',
@@ -43,7 +43,6 @@ server.route({
   config: {
     handler: function(request, reply) {
       Pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-        // create table santro_test (id serial, lastname VARCHAR(255) NOT NULL, firstname VARCHAR(255) NOT NULL, datejoined DATE NOT NULL, phone VARCHAR(10) NOT NULL, valid BOOLEAN NOT NULL);
         var query = 'SELECT * FROM santro_test';
           client.query(query, function(err, result) {
               done();
@@ -60,7 +59,12 @@ server.route({
       });
     },
     description: 'Gets all the members',
-    tags: ['api']
+    tags: ['api'],
+    validate : {
+      query : {
+        database: Joi.string().description(queryServerDescription)
+      }
+    }
   }
 });
 
@@ -101,6 +105,9 @@ server.route({
     description: 'Gets a specific member based on row id',
     tags: ['api'],
     validate: {
+      query : {
+        database: Joi.string().description(queryServerDescription)
+      },
       params: {
         id: Joi.number()
               .required()
@@ -149,6 +156,7 @@ server.route({
     tags: ['api'],
     validate: {
       query: {
+        database: Joi.string().description(queryServerDescription),
         firstname: Joi.string().required(),
         lastname: Joi.string().required(),
         datejoined: Joi.string().required()
@@ -212,6 +220,7 @@ server.route({
         id : Joi.number().required()
       },
       query : {
+        database: Joi.string().description(queryServerDescription),
         firstname : Joi.string(),
         lastname : Joi.string(),
         datejoined : Joi.string().description('e.g. 2015-04-25'),
@@ -255,6 +264,9 @@ server.route({
     validate : {
       params : {
         id : Joi.number().required()
+      },
+      query : {
+        database: Joi.string().description(queryServerDescription)
       }
     }
   }
@@ -299,6 +311,7 @@ server.route({
     tags: ['api'],
     validate: {
       query : {
+        database: Joi.string().description(queryServerDescription),
         areyousure : Joi.string().required().description('e.g. yes')
       }
     }
