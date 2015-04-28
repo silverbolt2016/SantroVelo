@@ -1,12 +1,11 @@
 var Hapi = require('hapi');
 var Joi = require('joi');
-var Pg = require('pg');
+var Handlers = require('./lib/handlers');
 
-var queryServerDescription = 'The database to connect, default: santro_test';
-var createTableQuery = 'create table santro_test (id serial, lastname VARCHAR(255) NOT NULL, firstname VARCHAR(255) NOT NULL, datejoined DATE NOT NULL, phone VARCHAR(10) NOT NULL, valid BOOLEAN NOT NULL);';
+var createTableQuery = 'create table william_test (id serial, lastname VARCHAR(255) NOT NULL, firstname VARCHAR(255) NOT NULL, datejoined DATE NOT NULL, phone VARCHAR(10) NOT NULL, valid BOOLEAN NOT NULL);';
 
 var defaultTable = 'santro_test';
-var userSelectedTable;
+var queryServerDescription = 'The database to connect, default: santro_test';
 
 var basePath;
 if (process.env.PRODUCTION) {
@@ -15,49 +14,43 @@ if (process.env.PRODUCTION) {
   basePath = 'http://localhost:5000'
 }
 
-var pack = require('package'),
-    swaggerOptions = {
-        basePath: basePath,
-        apiVersion: '0.1',
-        info: {
-          title: 'SantroVelo API Documentation',
-          description: 'All public routes for access to the SantroVelo database'
-        }
-    };
+var pack = require('package');
+var swaggerOptions = {
+  basePath: basePath,
+  apiVersion: '0.1',
+  info: {
+    title: 'SantroVelo API Documentation',
+    description: 'All public routes for access to the SantroVelo database'
+  }
+};
 
 var server = new Hapi.Server();
 server.connection({routes: {cors: true}, port: process.env.PORT || 5000 });
 
-server.ext('onRequest', function(request, reply) {
-  if (request.query == undefined) {
-    request.query = { database: defaultTable }
-  } else if (request.query != undefined && request.query.database == undefined) {
-    request.query.database = defaultTable;
+server.ext('onPreHandler', function(request, reply) {
+  if (request.query.database == undefined) {
+    request.query.database = 'santro_test';
   }
   reply.continue();
+});
+
+
+server.register({
+  register: require('hapi-swagger'),
+  options: swaggerOptions
+}, function (err) {
+  if (err) {
+      server.log(['error'], 'hapi-swagger load error: ' + err)
+  } else {
+      server.log(['start'], 'hapi-swagger interface loaded')
+  }
 });
 
 server.route({
   method: 'GET',
   path: '/users',
   config: {
-    handler: function(request, reply) {
-      Pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-        var query = 'SELECT * FROM santro_test';
-          client.query(query, function(err, result) {
-              done();
-              if (err)
-              { 
-                reply("Error " + err); 
-              } else { 
-                reply({
-                  status: 'success',
-                  message: result.rows
-                }); 
-              }
-          });
-      });
-    },
+    handler: Handlers.userAllGet,
     description: 'Gets all the members',
     tags: ['api'],
     validate : {
@@ -72,36 +65,7 @@ server.route({
   method: 'GET',
   path: '/users/{id}',
   config: {
-    handler: function(request, reply) {
-      Pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-        
-        var query = 'SELECT * FROM santro_test WHERE ' + request.params.id + '=id';
-        var queryResult;
-        var queryStatus;
-
-        client.query(query, function(err, result) {
-          done();
-          if (err) {
-            queryResult = 'failure',
-            queryStatus = 'Query could not be completed'
-          } else {
-            queryResult = 'User not found';
-            queryStatus = 'failure';
-
-            if (result.rows.length > 0) {
-              queryResult = result.rows[0];
-              queryStatus = 'success';
-            } 
-            reply({
-              status: queryStatus,
-              message: queryResult
-            });
-          }
-          
-        });
-      
-      });
-    },
+    handler: Handlers.userGet,
     description: 'Gets a specific member based on row id',
     tags: ['api'],
     validate: {
@@ -121,37 +85,7 @@ server.route({
   method: 'POST',
   path: '/users',
   config: {
-    handler: function(request, reply) {
-      var payload = request.query;
-      Pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-  
-        var query = 'INSERT INTO santro_test (Firstname, Lastname, DateJoined, Phone, Valid) values (\'' + 
-          payload.firstname + '\',\'' +
-          payload.lastname + '\',\'' +
-          payload.datejoined + '\',\'' + 
-          payload.phone +'\',\'' +
-          payload.valid + '\');';
-
-        client.query(query, function(err, result) {
-          done();
-
-          var queryStatus;
-          var queryResult;
-          
-          if (err) {
-            queryStatus = 'failure';
-            queryResult = 'The user could not be added';
-          } else {
-            queryStatus = 'success',
-            queryResult = 'The user has been added'
-          }
-          reply({
-            status: queryStatus,
-            message: queryResult
-          });
-        });
-      });
-    },
+    handler: Handlers.userNew,
     description: 'Add member',
     tags: ['api'],
     validate: {
@@ -173,46 +107,7 @@ server.route({
   method: 'PUT',
   path: '/users/{id}',
   config: {
-    handler: function(request, reply) {
-      var properties = [];
-      for (var key in request.query) {
-        if (request.query.hasOwnProperty(key)) {
-          properties.push(key);
-        }
-      }
-
-      var query = 'UPDATE santro_test SET ';
-      properties.forEach(function(elem, index) {
-        query += elem + '=\'' + request.query[elem] + '\'';
-        if (index < properties.length - 1) {
-          query +=', '
-        }
-      });
-
-      query += ' WHERE id=' + request.params.id + ';';
-
-      Pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-        client.query(query, function(err, result) {
-          done();
-
-          var queryStatus;
-          var queryResult;
-
-          if (err) {
-            queryStatus = 'failure';
-            queryResult = 'User unable to be updated';
-          } else {
-            queryStatus = 'success';
-            queryResult = 'User updated successfully';
-          }
-          reply({
-            status: queryStatus,
-            message: queryResult
-          })
-        });
-        
-      });
-    },
+    handler: Handlers.userUpdate,
     description: 'Edit an existing member',
     tags: ['api'],
     validate: {
@@ -235,30 +130,7 @@ server.route({
   method: 'DELETE',
   path: '/users/{id}',
   config : {
-    handler: function(request, reply) {
-      var query = 'DELETE FROM santro_test WHERE id=\'' + request.params.id + '\';'
-      Pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-        client.query(query, function(err, result) {
-          done();
-
-          var queryStatus;
-          var queryResult;
-
-          if (err) {
-            queryStatus = 'failure';
-            queryResult = 'User unable to be deleted';
-          } else {
-            queryStatus = 'success';
-            queryResult = 'User deleted successfully';
-          }
-          reply({
-            status: queryStatus,
-            message: queryResult
-          })
-
-        });
-      });
-    },
+    handler: Handlers.userDelete,
     description: 'Delete an existing member',
     tags: ['api'],
     validate : {
@@ -276,37 +148,7 @@ server.route({
   method: 'DELETE',
   path: '/users',
   config : {
-    handler: function(request, reply) {
-      if (request.query.areyousure != 'yes') {
-        reply({
-          status: 'failure',
-          message: 'areyousure query must be set to yes'
-        });
-      } else {
-        var query = 'DELETE FROM santro_test;';
-        Pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-          client.query(query, function(err, result) {
-            done();
-
-            var queryStatus;
-            var queryResult;
-
-            if (err) {
-              queryStatus = 'failure';
-              queryResult = 'All users unable to be deleted';
-            } else {
-              queryStatus = 'success';
-              queryResult = 'All users deleted successfully';
-            }
-
-            reply({
-              status: queryStatus,
-              message: queryResult
-            });
-          });
-        });
-      }
-    },
+    handler: Handlers.userAllDelete,
     description: 'Delete all members',
     tags: ['api'],
     validate: {
@@ -317,17 +159,6 @@ server.route({
     }
   }
 })
-
-server.register({
-        register: require('hapi-swagger'),
-        options: swaggerOptions
-    }, function (err) {
-        if (err) {
-            server.log(['error'], 'hapi-swagger load error: ' + err)
-        }else{
-            server.log(['start'], 'hapi-swagger interface loaded')
-        }
-    });
 
 server.start(function () {
     console.log('Server running at:', server.info.uri);
