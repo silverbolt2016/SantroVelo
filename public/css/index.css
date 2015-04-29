@@ -1,0 +1,15 @@
+@media (min-width: 1200px) { 
+  #col-members {
+    /*padding-right: 120px;*/
+    /*padding-left: 240px;*/
+  }
+
+  #col-new-member {
+    /*padding-right: 240px;*/
+    /*padding-left: 120px;*/
+  }
+}
+
+.container-main {
+  margin-top: 50px;
+}
