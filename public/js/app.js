@@ -4,9 +4,12 @@ var basePath = 'https://santro-velo.herokuapp.com';
 
 santroVeloApp.controller('MainController', function ($scope, $http) {
   $scope.members = [];
+
   $scope.getPhoneString = getPhoneString;
   $scope.getValidString = getValidString;
   $scope.getDateString = getDateString;
+  $scope.addMember = addMember;
+  $scope.addMemberDetails = {};
 
   getMembers();
 
@@ -47,5 +50,12 @@ santroVeloApp.controller('MainController', function ($scope, $http) {
   function getDateString(dateObject) {
     var date = new Date(dateObject);
     return date.toLocaleDateString();
+  }
+
+  function addMember(isValid) {
+    if (isValid) {
+      alert('vaild');
+    }
+    console.log($scope.addMemberDetails)
   }
 });
