@@ -31,11 +31,11 @@
     <div class="container container-main">
       <div class="row">
         <div id="col-members" class="col-md-6">
-          <div class="row">
-            <div class="col-xs-6">
+          <div class="row" style="height: 70px;">
+            <div class="col-sm-6 col-xs-5">
               <h2>Members</h2>
             </div>
-            <div class="col-xs-6">
+            <div class="col-sm-6 col-xs-7">
               <div class="form-group has-feedback" style="margin-top: 20px;">
                 <input type="text" class="form-control input-md" placeholder="Enter Member Details" ng-model="searchText">
                 <span class="glyphicon glyphicon-search form-control-feedback"></span>
@@ -46,27 +46,83 @@
           <div class="panel panel-default">
             <div class="panel-body" style="padding: 0">
               <table class="table">
-                <tr>
-                  <th>ID</th>
-                  <th>Name</th>
-                  <th>Date Joined</th>
-                  <th>Phone Number</th>
-                  <th>Valid</th>
-                </tr>
-                <tr ng-repeat="member in members | filter:searchText">
-                  <td>{{member.id}}</td>
-                  <td>{{member.firstname + ' ' + member.lastname}}</td>
-                  <td>{{member.datejoinedString}}</td>
-                  <td>{{member.phoneString}}</td>
-                  <td>{{member.validString}}</td>
-                </tr>
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Date Joined</th>
+                    <th>Phone Number</th>
+                    <th>Valid</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="member in members | filter:searchText">
+                    <td>{{member.id}}</td>
+                    <td>{{member.firstname + ' ' + member.lastname}}</td>
+                    <td>{{member.datejoinedString}}</td>
+                    <td>{{member.phoneString}}</td>
+                    <td>{{member.validString}}</td>
+                  </tr>
+                </tbody>
               </table>
             </div>
           </div>
         </div>
         <div id="col-new-member" class="col-md-6">
-          <h2>Add Member</h2>
-          <div class="well"></div>
+          <div class="row" style="height: 70px;">
+            <div class="col-xs-12">
+              <h2>Add Member</h2>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-body" >
+              <form>
+                <div class="row">
+                  <div class="col-xs-6">
+                    <div class="form-group">
+                      <label for="firstname">First Name</label>
+                      <input type="text" class="form-control" id="firstname" placeholder="John">
+                    </div>
+                  </div>
+                  <div class="col-xs-6">
+                    <div class="form-group">
+                      <label for="lastname">Last Name</label>
+                      <input type="text" class="form-control" id="lastname" placeholder="Doe">
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-6">
+                    <div class="form-group">
+                      <label for="datejoined">Date Joined</label>
+                      <input type="date" class="form-control" id="datejoined" placeholder="">
+                    </div>
+                  </div>
+                  <div class="col-xs-6">
+                    <div class="form-group">
+                      <label for="phonenumber">Phone Number</label>
+                      <input type="tel" class="form-control" id="phonenumber" placeholder="8043458798">
+                    </div>
+                  </div>
+                </div>
+                <div class="row" style="padding-bottom: 20px;">
+                  <div class="col-xs-6">
+                    <label>Valid</label>
+                    <div class="row">
+                      <div class="col-xs-6" style="padding-right: 5px;">
+                        <button class="btn btn-default btn-block">Yes</button>
+                      </div>
+                      <div class="col-xs-6" style="padding-left: 5px;">
+                        <button class="btn btn-default btn-block">No</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-success pull-right">Submit</button>
+                <button type="reset" class="btn btn-danger pull-left">Reset</button>
+              </form>
+            </div>
+          </div>
         </div>
       </div>
     </div>
