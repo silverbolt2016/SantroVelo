@@ -16,6 +16,7 @@ santroVeloApp.controller('MainController', function ($scope, $http) {
   $scope.updateMember = updateMember;
 
   $scope.isNumeric = isNumeric;
+  $scope.isPhoneValid = isPhoneValid;
   
   $scope.resetAddMemberForm = resetAddMemberForm;
   
@@ -142,6 +143,32 @@ santroVeloApp.controller('MainController', function ($scope, $http) {
   function resetAddMemberForm() {
     $scope.addMemberDetails = {};
     $scope.addMemberDetails.submitted = false;
+  }
+
+  function isPhoneValid(string) {
+    var status = {
+      error : false,
+      warning : false,
+      success : false
+    }
+
+    if (string == null) {
+      status.error = true;
+      return status;
+    }
+
+    if (string.length != 10) {
+      status.warning = true;
+      return status;
+    }
+
+    if (!isNumeric(string)) {
+      status.error = true;
+      return status;
+    }
+
+    status.success = true;
+    return status;
   }
 
   function isNumeric(string) {

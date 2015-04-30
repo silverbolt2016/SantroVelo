@@ -113,17 +113,25 @@
                     </div>
                   </div>
                   <div class="col-xs-6">
-                    <div class="form-group" ng-class="{ 'has-error has-feedback' : addMemberForm.phone.$invalid && !addMemberForm.phone.$pristine && addMemberDetails.phone == null, 'has-success has-feedback' : addMemberForm.phone.$valid && addMemberDetails.phone.length == 10, 'has-warning has-feedback' : addMemberDetails.phone.length > 0 && addMemberDetails.phone.length != 10 && !addMemberForm.phone.$pristine }">
+                    <div class="form-group" ng-class="{ 'has-error has-feedback' : !addMemberForm.phone.$pristine && isPhoneValid(addMemberDetails.phone).error, 'has-success has-feedback' : isPhoneValid(addMemberDetails.phone).success, 'has-warning has-feedback' : isPhoneValid(addMemberDetails.phone).warning }">
                       <label class="control-label" for="phone">Phone</label>
 
-                      <span ng-show="addMemberForm.phone.$valid && addMemberDetails.phone.length != 10 || (!addMemberForm.phone.$pristine && addMemberForm.phone.$invalid && addMemberDetails.phone.length == null)" class="help-block pull-right sv-help-block mobile-hide">10 Digit # Required</span>
+                      <span ng-show="!addMemberForm.phone.$pristine && (isPhoneValid(addMemberDetails.phone).warning || isPhoneValid(addMemberDetails.phone).error)" class="help-block pull-right sv-help-block mobile-hide">10 Digit # Required</span>
                       
+                      <!-- Input -->
                       <input type="tel" class="form-control" name="phone" placeholder="8043458798" required ng-model="addMemberDetails.phone" ng-minlength="1" ng-maxlength="10">
                       
-                      <span ng-show="addMemberForm.phone.$invalid && !addMemberForm.phone.$pristine && addMemberDetails.phone == null" class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
-                      <span ng-show="addMemberForm.phone.$valid && addMemberDetails.phone.length == 10" class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
-                      <span ng-show="addMemberForm.phone.$valid && addMemberDetails.phone.length > 0 && addMemberDetails.phone.length != 10" class="glyphicon glyphicon-warning-sign form-control-feedback" aria-hidden="true"></span>
-                      <p ng-show="addMemberForm.phone.$valid && addMemberDetails.phone.length != 10 || (!addMemberForm.phone.$pristine && addMemberForm.phone.$invalid && addMemberDetails.phone.length == null)" class="help-block sv-help-block desktop-hide">10 Digit # Required</p>
+                      <!-- Invalid -->
+                      <span ng-show="!addMemberForm.phone.$pristine && isPhoneValid(addMemberDetails.phone).error" class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+
+                      <!-- Warning -->
+                      <span ng-show="!addMemberForm.phone.$pristine && isPhoneValid(addMemberDetails.phone).warning" class="glyphicon glyphicon-warning-sign form-control-feedback" aria-hidden="true"></span>
+                      
+                      <!-- Success -->
+                      <span ng-show="!addMemberForm.phone.$pristine && isPhoneValid(addMemberDetails.phone).success" class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
+
+                      <!-- Invalid/Warning text -->
+                      <p ng-show="!addMemberForm.phone.$pristine && (isPhoneValid(addMemberDetails.phone).warning || isPhoneValid(addMemberDetails.phone).error)" class="help-block sv-help-block desktop-hide">10 Digit # Required</p>
                     </div>
                   </div>
                 </div>
@@ -141,7 +149,7 @@
                   </div>
                 </div>
                 <span class="pull-right">
-                  <span class="text-success" style="vertical-align: middle;">All Fields Required </span><button type="submit" ng-disabled="addMemberForm.$invalid || addMemberDetails.valid == null || !isNumeric(addMemberDetails.phone)" class="btn btn-success">Submit</button>
+                  <span class="text-success" style="vertical-align: middle;">All Fields Required </span><button type="submit" ng-disabled="addMemberForm.$invalid || addMemberDetails.valid == null || !isPhoneValid(addMemberDetails.phone).success" class="btn btn-success">Submit</button>
                 </span>
                 <button type="reset" ng-click="resetAddMemberForm()" class="btn btn-danger pull-left">Reset</button>
               </form>
