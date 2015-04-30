@@ -45,14 +45,14 @@
           </div>
           <div class="panel panel-default">
             <div class="panel-body" style="padding: 0">
-              <table class="table table-hover">
+              <table class="table table-hover" style="margin-bottom: 0;">
                 <thead>
                   <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Date Joined</th>
-                    <th>Phone Number</th>
-                    <th>Valid</th>
+                    <th width="5%">ID</th>
+                    <th class="name">Name</th>
+                    <th class="col-datejoined">Date Joined</th>
+                    <th class="col-phone">Phone Number</th>
+                    <th width="col-valid">Valid</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -63,8 +63,8 @@
                     <td>{{member.phoneString}}</td>
                     <td>
                       <div class="btn-group" role="group" aria-label="..." style="">
-                        <button type="button" style="width: auto" class="btn btn-default btn-sm" ng-class="{ 'btn-success disabled' : member.valid == true }" ng-click="member.valid=true; updateMember(member);">Yes</button>
-                        <button type="button" style="width: auto;" class="btn btn-default btn-sm" ng-class="{ 'btn-danger disabled' : member.valid == false }" ng-click="member.valid=false; updateMember(member);">No</button>
+                        <button type="button" style="width: 40px;" class="btn btn-default btn-sm" ng-class="{ 'btn-success disabled' : member.valid == true }" ng-click="member.valid=true; updateMember(member);">Yes</button>
+                        <button type="button" style="width: 40px;" class="btn btn-default btn-sm" ng-class="{ 'btn-danger disabled' : member.valid == false }" ng-click="member.valid=false; updateMember(member);">No</button>
                       </div>
                     </td>
                   </tr>

@@ -14,11 +14,43 @@
   .desktop-hide {
     display: none;
   }
+
+  .col-name {
+    width: 30%;
+  }
+
+  .col-datejoined {
+    width: 20%;
+  }
+
+  .col-phone {
+    width: 25%
+  }
+
+  .col-valid {
+    width: 20%;
+  }
 }
 
 @media(max-width:767px){
   .mobile-hide {
     display: none;
+  }
+
+  .col-name {
+    width: 15%;
+  }
+
+  .col-datejoined {
+    width: 27.5%;
+  }
+
+  .col-phone {
+    width: 37.5%
+  }
+
+  .col-valid {
+    width: 15%;
   }
 }
 
