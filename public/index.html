@@ -56,7 +56,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr ng-repeat="member in members | filter:searchText">
+                  <tr ng-repeat="member in members | filter: searchText | orderBy: 'id'">
                     <td>{{member.id}}</td>
                     <td>{{member.firstname + ' ' + member.lastname}}</td>
                     <td>{{member.datejoinedString}}</td>

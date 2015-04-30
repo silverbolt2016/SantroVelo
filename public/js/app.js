@@ -107,7 +107,7 @@ santroVeloApp.controller('MainController', function ($scope, $http) {
 
     console.log(query);
 
-    $http.post('/users' + database + query, $scope.addMemberDetails).
+    $http.post(basePath + '/users' + database + query, $scope.addMemberDetails).
       success(function(data, status, headers, config) {
         console.log(data);
         getMembers();
@@ -131,7 +131,7 @@ santroVeloApp.controller('MainController', function ($scope, $http) {
     var query = getMemberQueryString(currMember);
     console.log(query);
 
-    $http.put('/users/' + member.id + database + query).
+    $http.put(basePath + '/users/' + member.id + database + query).
       success(function(data, status, headers, config) {
         console.log(data);
       }).
