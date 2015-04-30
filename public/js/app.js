@@ -142,7 +142,7 @@ santroVeloApp.controller('MainController', function ($scope, $http) {
 
   function resetAddMemberForm() {
     $scope.addMemberDetails = {};
-    $scope.addMemberDetails.submitted = false;
+    $scope.addMemberForm.$setPristine();
   }
 
   function isPhoneValid(string) {
