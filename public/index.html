@@ -48,41 +48,34 @@
               <table class="table table-hover sv-table" style="margin-bottom: 0;">
                 <thead>
                   <tr>
-                    <th class="col-id">
-                      <button type="button" class="btn btn-default btn-table-header-left btn-block" ng-click="setOrderByAttribute('id')">
+                    <th>
+                      <button type="button" class="btn btn-default btn-table-header-left btn-block btn-mobile-header" ng-click="setOrderByAttribute('id')">
                         ID
-                        <span style="width: 14px;">
-                        <span ng-show="orderByAttribute == '+id'" style="margin-left: 5px;" class="glyphicon glyphicon-triangle-top" aria-hidden="true"></span>
-                        <span ng-show="orderByAttribute == '-id'" style="margin-left: 5px;" class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span>
-                        </span>
+                        <span style="width: 14px;" class="glyphicon pull-right" aria-hidden="true" ng-class="{ 'glyphicon-triangle-top' : orderByAttribute == '+id', 'glyphicon-triangle-bottom' : orderByAttribute == '-id' }"></span>
                       </button>
                     </th>
-                    <th class="col-name">
-                      <button type="button" class="btn btn-default btn-table-header btn-block" ng-click="setOrderByAttribute('firstname')">
+                    <th>
+                      <button type="button" class="btn btn-default btn-table-header btn-block btn-mobile-header" ng-click="setOrderByAttribute('firstname')">
                         Name
-                        <span ng-show="orderByAttribute == '+firstname'" style="margin-left: 5px;" class="glyphicon glyphicon-triangle-top" aria-hidden="true"></span>
-                        <span ng-show="orderByAttribute == '-firstname'" style="margin-left: 5px;" class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span>
+                        <span style="width: 14px;" class="glyphicon pull-right" aria-hidden="true" ng-class="{ 'glyphicon-triangle-top' : orderByAttribute == '+firstname', 'glyphicon-triangle-bottom' : orderByAttribute == '-firstname' }"></span>
                       </button>
                     </th>
-                    <th class="col-datejoined">
-                      <button type="button" class="btn btn-default btn-table-header btn-block" ng-click="setOrderByAttribute('datejoined')">
+                    <th>
+                      <button type="button" class="btn btn-default btn-table-header btn-block btn-mobile-header" ng-click="setOrderByAttribute('datejoined')">
                         Date Joined
-                        <span ng-show="orderByAttribute == '+datejoined'" style="margin-left: 5px;" class="glyphicon glyphicon-triangle-top" aria-hidden="true"></span>
-                        <span ng-show="orderByAttribute == '-datejoined'" style="margin-left: 5px;" class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span>
+                        <span style="width: 14px;" class="glyphicon pull-right" aria-hidden="true" ng-class="{ 'glyphicon-triangle-top' : orderByAttribute == '+datejoined', 'glyphicon-triangle-bottom' : orderByAttribute == '-datejoined' }"></span>
                       </button>
                     </th>
-                    <th class="col-phone">
-                      <button type="button" class="btn btn-default btn-table-header btn-block" ng-click="setOrderByAttribute('phone')">
+                    <th>
+                      <button type="button" class="btn btn-default btn-table-header btn-block btn-mobile-header" ng-click="setOrderByAttribute('phone')">
                         Phone Number
-                        <span ng-show="orderByAttribute == '+phone'" style="margin-left: 5px;" class="glyphicon glyphicon-triangle-top" aria-hidden="true"></span>
-                        <span ng-show="orderByAttribute == '-phone'" style="margin-left: 5px;" class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span>
+                        <span style="width: 14px;" class="glyphicon pull-right" aria-hidden="true" ng-class="{ 'glyphicon-triangle-top' : orderByAttribute == '+phone', 'glyphicon-triangle-bottom' : orderByAttribute == '-phone' }"></span>
                       </button>
                     </th>
-                    <th width="col-valid">
-                      <button type="button" class="btn btn-default btn-table-header btn-block" ng-click="setOrderByAttribute('valid')">
+                    <th>
+                      <button type="button" style="" class="btn btn-default btn-table-header-right btn-block btn-mobile-header" ng-click="setOrderByAttribute('valid')">
                         Valid
-                        <span ng-show="orderByAttribute == '+valid'" style="margin-left: 5px;" class="glyphicon glyphicon-triangle-top" aria-hidden="true"></span>
-                        <span ng-show="orderByAttribute == '-valid'" style="margin-left: 5px;" class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span>
+                        <span style="width: 14px;" class="glyphicon pull-right" aria-hidden="true" ng-class="{ 'glyphicon-triangle-top' : orderByAttribute == '+valid', 'glyphicon-triangle-bottom' : orderByAttribute == '-valid' }"></span>
                       </button>
                     </th>
                   </tr>

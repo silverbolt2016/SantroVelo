@@ -175,7 +175,6 @@ santroVeloApp.controller('MainController', function ($scope, $http) {
   }
 
   function setOrderByAttribute(attr) {
-    console.log(attr);
     switch (attr) {
       case 'id':
         if ($scope.orderByAttribute == '+id') {
@@ -229,8 +228,6 @@ santroVeloApp.controller('MainController', function ($scope, $http) {
 
         break;
     }
-
-    console.log($scope.orderByAttribute)
   }
 
   function isNumeric(string) {
