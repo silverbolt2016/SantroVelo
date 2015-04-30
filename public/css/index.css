@@ -10,6 +10,23 @@
   }
 }
 
+@media(min-width: 767px) {
+  .desktop-hide {
+    display: none;
+  }
+}
+
+@media(max-width:767px){
+  .mobile-hide {
+    display: none;
+  }
+}
+
 .container-main {
   margin-top: 50px;
+}
+
+.sv-help-block {
+  margin-top: 1px;
+  margin-bottom: 0;
 }

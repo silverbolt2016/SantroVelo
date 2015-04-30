@@ -1,6 +1,9 @@
 var santroVeloApp = angular.module('santroVelo', []);
 
-var basePath = 'https://santro-velo.herokuapp.com';
+// var basePath = 'https://santro-velo.herokuapp.com';
+var basePath = 'http://localhost:5000';
+// var database = '?database=william_test';
+var database = '';
 
 santroVeloApp.controller('MainController', function ($scope, $http) {
   $scope.members = [];
@@ -8,15 +11,23 @@ santroVeloApp.controller('MainController', function ($scope, $http) {
   $scope.getPhoneString = getPhoneString;
   $scope.getValidString = getValidString;
   $scope.getDateString = getDateString;
+
   $scope.addMember = addMember;
+  $scope.updateMember = updateMember;
+
+  $scope.isNumeric = isNumeric;
+  
+  $scope.resetAddMemberForm = resetAddMemberForm;
+  
   $scope.addMemberDetails = {};
 
   getMembers();
 
   function getMembers() {
-    $http.get(basePath + '/users').
+    $http.get(basePath + '/users' + database).
       success(function(data, status, headers, config) {
-        
+        console.log(data);
+
         data.message.forEach(function(elem, index) {
           elem.datejoinedString = getDateString(elem.datejoined);
           elem.validString = getValidString(elem.valid);
@@ -26,7 +37,8 @@ santroVeloApp.controller('MainController', function ($scope, $http) {
         $scope.members = data.message;
       }).
       error(function(data, status, headers, config) {
-
+        console.log('Getting all users error');
+        console.log(data);
       });
   }
 
@@ -49,13 +61,90 @@ santroVeloApp.controller('MainController', function ($scope, $http) {
 
   function getDateString(dateObject) {
     var date = new Date(dateObject);
-    return date.toLocaleDateString();
+
+    var month = parseInt(date.getMonth()) + 1;
+
+    return date.getFullYear() + '-' + month  + '-' + date.getDate();
+  }
+
+  function getMemberQueryString(newMember) {
+    var query;
+    if (database == '') {
+      query = '?';
+    } else {
+      query = '&';
+    }
+
+    var properties = [];
+    for (var key in newMember) {
+      if (newMember.hasOwnProperty(key)) {
+        properties.push(key);
+      }
+    }
+
+    properties.forEach(function(elem, index) {
+      query += elem + '=' + newMember[elem];
+      if (index < properties.length - 1) {
+        query +='&'
+      }
+    });
+
+    return query;
   }
 
   function addMember(isValid) {
-    if (isValid) {
-      alert('vaild');
-    }
-    console.log($scope.addMemberDetails)
+
+    var newMember = {
+      firstname : $scope.addMemberDetails.firstname,
+      lastname : $scope.addMemberDetails.lastname,
+      datejoined : getDateString($scope.addMemberDetails.datejoined),
+      phone : $scope.addMemberDetails.phone,
+      valid : $scope.addMemberDetails.valid
+    };
+
+    var query = getMemberQueryString(newMember);
+
+    console.log(query);
+
+    $http.post('/users' + database + query, $scope.addMemberDetails).
+      success(function(data, status, headers, config) {
+        console.log(data);
+        getMembers();
+      }).
+      error(function(data, status, headers, config) {
+        console.log('Adding new user error');
+        console.log(data);
+      });
+  }
+
+  function updateMember(member) {
+
+    var currMember = {
+      firstname : member.firstname,
+      lastname : member.lastname,
+      datejoined : getDateString(member.datejoined),
+      phone : member.phone,
+      valid : member.valid
+    };
+
+    var query = getMemberQueryString(currMember);
+    console.log(query);
+
+    $http.put('/users/' + member.id + database + query).
+      success(function(data, status, headers, config) {
+        console.log(data);
+      }).
+      error(function(data, status, headers, config) {
+        console.log('Error updateding member');
+      });
+  }
+
+  function resetAddMemberForm() {
+    $scope.addMemberDetails = {};
+    $scope.addMemberDetails.submitted = false;
+  }
+
+  function isNumeric(string) {
+    return !isNaN(string);
   }
 });
