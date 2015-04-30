@@ -45,26 +45,58 @@
           </div>
           <div class="panel panel-default">
             <div class="panel-body" style="padding: 0">
-              <table class="table table-hover" style="margin-bottom: 0;">
+              <table class="table table-hover sv-table" style="margin-bottom: 0;">
                 <thead>
                   <tr>
-                    <th width="5%">ID</th>
-                    <th class="name">Name</th>
-                    <th class="col-datejoined">Date Joined</th>
-                    <th class="col-phone">Phone Number</th>
-                    <th width="col-valid">Valid</th>
+                    <th class="col-id">
+                      <button type="button" class="btn btn-default btn-table-header-left btn-block" ng-click="setOrderByAttribute('id')">
+                        ID
+                        <span style="width: 14px;">
+                        <span ng-show="orderByAttribute == '+id'" style="margin-left: 5px;" class="glyphicon glyphicon-triangle-top" aria-hidden="true"></span>
+                        <span ng-show="orderByAttribute == '-id'" style="margin-left: 5px;" class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span>
+                        </span>
+                      </button>
+                    </th>
+                    <th class="col-name">
+                      <button type="button" class="btn btn-default btn-table-header btn-block" ng-click="setOrderByAttribute('firstname')">
+                        Name
+                        <span ng-show="orderByAttribute == '+firstname'" style="margin-left: 5px;" class="glyphicon glyphicon-triangle-top" aria-hidden="true"></span>
+                        <span ng-show="orderByAttribute == '-firstname'" style="margin-left: 5px;" class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span>
+                      </button>
+                    </th>
+                    <th class="col-datejoined">
+                      <button type="button" class="btn btn-default btn-table-header btn-block" ng-click="setOrderByAttribute('datejoined')">
+                        Date Joined
+                        <span ng-show="orderByAttribute == '+datejoined'" style="margin-left: 5px;" class="glyphicon glyphicon-triangle-top" aria-hidden="true"></span>
+                        <span ng-show="orderByAttribute == '-datejoined'" style="margin-left: 5px;" class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span>
+                      </button>
+                    </th>
+                    <th class="col-phone">
+                      <button type="button" class="btn btn-default btn-table-header btn-block" ng-click="setOrderByAttribute('phone')">
+                        Phone Number
+                        <span ng-show="orderByAttribute == '+phone'" style="margin-left: 5px;" class="glyphicon glyphicon-triangle-top" aria-hidden="true"></span>
+                        <span ng-show="orderByAttribute == '-phone'" style="margin-left: 5px;" class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span>
+                      </button>
+                    </th>
+                    <th width="col-valid">
+                      <button type="button" class="btn btn-default btn-table-header btn-block" ng-click="setOrderByAttribute('valid')">
+                        Valid
+                        <span ng-show="orderByAttribute == '+valid'" style="margin-left: 5px;" class="glyphicon glyphicon-triangle-top" aria-hidden="true"></span>
+                        <span ng-show="orderByAttribute == '-valid'" style="margin-left: 5px;" class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span>
+                      </button>
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr ng-repeat="member in members | filter: searchText | orderBy: 'id'">
+                  <tr ng-repeat="member in members | filter: searchText | orderBy: orderByAttribute">
                     <td>{{member.id}}</td>
                     <td>{{member.firstname + ' ' + member.lastname}}</td>
                     <td>{{member.datejoinedString}}</td>
                     <td>{{member.phoneString}}</td>
                     <td>
                       <div class="btn-group" role="group" aria-label="..." style="">
-                        <button type="button" style="width: 40px;" class="btn btn-default btn-sm" ng-class="{ 'btn-success disabled' : member.valid == true }" ng-click="member.valid=true; updateMember(member);">Yes</button>
-                        <button type="button" style="width: 40px;" class="btn btn-default btn-sm" ng-class="{ 'btn-danger disabled' : member.valid == false }" ng-click="member.valid=false; updateMember(member);">No</button>
+                        <button type="button" style="width: 38px;" class="btn btn-default btn-sm" ng-class="{ 'btn-success disabled' : member.valid == true }" ng-click="member.valid=true; updateMember(member);">Yes</button>
+                        <button type="button" style="width: 38px;" class="btn btn-default btn-sm" ng-class="{ 'btn-danger disabled' : member.valid == false }" ng-click="member.valid=false; updateMember(member);">No</button>
                       </div>
                     </td>
                   </tr>

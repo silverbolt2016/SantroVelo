@@ -19,8 +19,11 @@ santroVeloApp.controller('MainController', function ($scope, $http) {
   $scope.isPhoneValid = isPhoneValid;
   
   $scope.resetAddMemberForm = resetAddMemberForm;
-  
+  $scope.setOrderByAttribute = setOrderByAttribute;
+
   $scope.addMemberDetails = {};
+
+  $scope.orderByAttribute = '+id';
 
   getMembers();
 
@@ -169,6 +172,65 @@ santroVeloApp.controller('MainController', function ($scope, $http) {
 
     status.success = true;
     return status;
+  }
+
+  function setOrderByAttribute(attr) {
+    console.log(attr);
+    switch (attr) {
+      case 'id':
+        if ($scope.orderByAttribute == '+id') {
+          $scope.orderByAttribute = '-id';
+        } else if($scope.orderByAttribute == '-id') {
+          $scope.orderByAttribute = '+id';
+        } else {
+          $scope.orderByAttribute = '+id';
+        }
+        break;
+
+      case 'firstname':
+        if ($scope.orderByAttribute == '+firstname') {
+          $scope.orderByAttribute = '-firstname';
+        } else if ($scope.orderByAttribute == '-firstname') {
+          $scope.orderByAttribute = '+firstname';
+        } else {
+          $scope.orderByAttribute = '+firstname';
+        }
+        break;
+
+      case 'datejoined':
+        if ($scope.orderByAttribute == '+datejoined') {
+          $scope.orderByAttribute = '-datejoined';
+        } else if ($scope.orderByAttribute == '-datejoined') {
+          $scope.orderByAttribute = '+datejoined';
+        } else {
+          $scope.orderByAttribute = '+datejoined';
+        }
+
+        break;
+      case 'phone':
+        if ($scope.orderByAttribute == '+phone') {
+          $scope.orderByAttribute = '-phone';
+        } else if ($scope.orderByAttribute == '-phone') {
+          $scope.orderByAttribute = '+phone';
+        } else {
+          $scope.orderByAttribute = '+phone';
+        }
+
+        break;
+
+      case 'valid':
+        if ($scope.orderByAttribute == '+valid') {
+          $scope.orderByAttribute = '-valid';
+        } else if ($scope.orderByAttribute == '-valid') {
+          $scope.orderByAttribute = '+valid';
+        } else {
+          $scope.orderByAttribute = '+valid';
+        }
+
+        break;
+    }
+
+    console.log($scope.orderByAttribute)
   }
 
   function isNumeric(string) {
