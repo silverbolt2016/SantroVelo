@@ -1,7 +1,7 @@
 var santroVeloApp = angular.module('santroVelo', []);
 
-// var basePath = 'https://santro-velo.herokuapp.com';
-var basePath = 'http://localhost:5000';
+var basePath = 'https://santro-velo.herokuapp.com';
+// var basePath = 'http://localhost:5000';
 // var database = '?database=william_test';
 var database = '';
 
