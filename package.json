@@ -1,0 +1,26 @@
+{
+  "name": "SantroVelo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wnvuong/SantroVelo.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wnvuong/SantroVelo/issues"
+  },
+  "homepage": "https://github.com/wnvuong/SantroVelo",
+  "dependencies": {
+    "hapi": "^8.4.0",
+    "hapi-swagger": "^0.7.3",
+    "joi": "^6.4.1",
+    "package": "^1.0.1",
+    "pg": "^4.3.0"
+  }
+}
