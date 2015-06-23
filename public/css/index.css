@@ -27,7 +27,7 @@
 }
 
 .btn-mobile-header {
-  
+  height: 50px; 
 }
 
 
@@ -45,8 +45,8 @@
 }
 
 .btn-table-header {
-  padding-top: 10px;
-  padding-bottom: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
   padding-left: 10px;
   padding-right: 5px;
   
@@ -62,8 +62,8 @@
 }
 
 .btn-table-header-left {
-  padding-top: 10px;
-  padding-bottom: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
   padding-left: 5px;
   padding-right: 5px;
   
@@ -87,8 +87,8 @@
 }
 
 .btn-table-header-right {
-  padding-top: 10px;
-  padding-bottom: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
   padding-left: 5px;
   padding-right: 5px;
   
@@ -97,6 +97,9 @@
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
   border-top-left-radius: 0;
+  border-top-right-radius: 0;
+
+  border-right: 1px solid #ddd;
 
   text-align: left;
 

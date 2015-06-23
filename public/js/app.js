@@ -1,7 +1,7 @@
 var santroVeloApp = angular.module('santroVelo', []);
 
-var basePath = 'https://santro-velo.herokuapp.com';
-// var basePath = 'http://localhost:5000';
+// var basePath = 'https://santro-velo.herokuapp.com';
+var basePath = 'http://localhost:5000';
 // var database = '?database=william_test';
 var database = '';
 
@@ -103,7 +103,8 @@ santroVeloApp.controller('MainController', function ($scope, $http) {
       lastname : $scope.addMemberDetails.lastname,
       datejoined : getDateString($scope.addMemberDetails.datejoined),
       phone : $scope.addMemberDetails.phone,
-      valid : $scope.addMemberDetails.valid
+      valid : $scope.addMemberDetails.valid,
+      amount: $scope.addMemberDetails.amount
     };
 
     var query = getMemberQueryString(newMember);
@@ -128,7 +129,8 @@ santroVeloApp.controller('MainController', function ($scope, $http) {
       lastname : member.lastname,
       datejoined : getDateString(member.datejoined),
       phone : member.phone,
-      valid : member.valid
+      valid : member.valid,
+      amount : member.amount
     };
 
     var query = getMemberQueryString(currMember);
@@ -227,6 +229,15 @@ santroVeloApp.controller('MainController', function ($scope, $http) {
         }
 
         break;
+
+      case 'amount':
+        if ($scope.orderByAttribute == '+amount') {
+          $scope.orderByAttribute = '-amount';
+        } else if ($scope.orderByAttribute == '-amount') {
+          $scope.orderByAttribute = '+amount';
+        } else {
+          $scope.orderByAttribute = '+amount';
+        }
     }
   }
 

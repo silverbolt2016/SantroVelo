@@ -3,6 +3,7 @@ var Joi = require('joi');
 var Handlers = require('./lib/handlers');
 
 var createTableQuery = 'create table william_test (id serial, lastname VARCHAR(255) NOT NULL, firstname VARCHAR(255) NOT NULL, datejoined DATE NOT NULL, phone VARCHAR(10) NOT NULL, valid BOOLEAN NOT NULL);';
+// alter table santro_test add column amount money;
 
 var defaultTable = 'santro_test';
 var queryServerDescription = 'The database to connect, default: santro_test';
@@ -112,6 +113,7 @@ server.route({
           .description('e.g. 2015-04-25'),
         phone: Joi.string().length(10).required()
           .description('e.g. 8043219876'),
+        amount: Joi.string().required(),
         valid: Joi.boolean().required()
       }
     }
