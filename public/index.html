@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html ng-app="santroVelo">
+<head lang="en">
+  <title>SantroVelo</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+
+  <!-- Javascript Frameworks -->
+  <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+  <!-- Custom JS -->
+  <script src="./js/app.js"></script>
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" type="text/css" href="./css/index.css">
+</head>
+<body>
+  <div ng-controller="MainController">
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="#">Santro Velo</a>
+          </div>
+        </div>
+    </nav>
+    <div class="container container-main">
+      <div class="row">
+        <div id="col-members" class="col-md-6">
+          <div class="row" style="height: 70px;">
+            <div class="col-sm-6 col-xs-5">
+              <h2>Members</h2> 
+            </div>
+            <div class="col-sm-6 col-xs-7">
+              <div class="form-group has-feedback" style="margin-top: 20px;">
+                <input type="search" class="form-control input-md" placeholder="Enter Member Details" ng-model="searchText">
+                <span class="glyphicon glyphicon-search form-control-feedback"></span>
+              </div>
+
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-body" style="padding: 0">
+              <table class="table table-hover sv-table" style="margin-bottom: 0;">
+                <thead>
+                  <tr>
+                    <th>
+                      <button type="button" class="btn btn-default btn-table-header-left btn-block btn-mobile-header" ng-click="setOrderByAttribute('id')">
+                        ID
+                        <span style="width: 14px;" class="glyphicon pull-right" aria-hidden="true" ng-class="{ 'glyphicon-triangle-top' : orderByAttribute == '+id', 'glyphicon-triangle-bottom' : orderByAttribute == '-id' }"></span>
+                      </button>
+                    </th>
+                    <th>
+                      <button type="button" class="btn btn-default btn-table-header btn-block btn-mobile-header" ng-click="setOrderByAttribute('firstname')">
+                        Name
+                        <span style="width: 14px;" class="glyphicon pull-right" aria-hidden="true" ng-class="{ 'glyphicon-triangle-top' : orderByAttribute == '+firstname', 'glyphicon-triangle-bottom' : orderByAttribute == '-firstname' }"></span>
+                      </button>
+                    </th>
+                    <th>
+                      <button type="button" class="btn btn-default btn-table-header btn-block btn-mobile-header" ng-click="setOrderByAttribute('datejoined')">
+                        Date Joined
+                        <span style="width: 14px;" class="glyphicon pull-right" aria-hidden="true" ng-class="{ 'glyphicon-triangle-top' : orderByAttribute == '+datejoined', 'glyphicon-triangle-bottom' : orderByAttribute == '-datejoined' }"></span>
+                      </button>
+                    </th>
+                    <th>
+                      <button type="button" class="btn btn-default btn-table-header btn-block btn-mobile-header" ng-click="setOrderByAttribute('phone')">
+                        Phone Number
+                        <span style="width: 14px;" class="glyphicon pull-right" aria-hidden="true" ng-class="{ 'glyphicon-triangle-top' : orderByAttribute == '+phone', 'glyphicon-triangle-bottom' : orderByAttribute == '-phone' }"></span>
+                      </button>
+                    </th>
+                    <th>
+                      <button type="button" style="" class="btn btn-default btn-table-header-right btn-block btn-mobile-header" ng-click="setOrderByAttribute('valid')">
+                        Valid
+                        <span style="width: 14px;" class="glyphicon pull-right" aria-hidden="true" ng-class="{ 'glyphicon-triangle-top' : orderByAttribute == '+valid', 'glyphicon-triangle-bottom' : orderByAttribute == '-valid' }"></span>
+                      </button>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="member in members | filter: searchText | orderBy: orderByAttribute">
+                    <td>{{member.id}}</td>
+                    <td>{{member.firstname + ' ' + member.lastname}}</td>
+                    <td>{{member.datejoinedString}}</td>
+                    <td>{{member.phoneString}}</td>
+                    <td>
+                      <div class="btn-group" role="group" aria-label="..." style="">
+                        <button type="button" style="width: 38px;" class="btn btn-default btn-sm" ng-class="{ 'btn-success disabled' : member.valid == true }" ng-click="member.valid=true; updateMember(member);">Yes</button>
+                        <button type="button" style="width: 38px;" class="btn btn-default btn-sm" ng-class="{ 'btn-danger disabled' : member.valid == false }" ng-click="member.valid=false; updateMember(member);">No</button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div id="col-new-member" class="col-md-6">
+          <div class="row" style="height: 70px;">
+            <div class="col-xs-12">
+              <h2>Add Member</h2>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-body" >
+              <form name="addMemberForm" ng-submit="addMember();" novalidate>
+                <div class="row">
+                  <div class="col-xs-6">
+                    <div class="form-group" ng-class="{ 'has-error has-feedback' : addMemberForm.firstname.$invalid && !addMemberForm.firstname.$pristine, 'has-success has-feedback' : addMemberForm.firstname.$valid }">
+                      <label class="control-label" for="firstname">First Name</label>
+                      <span ng-show="addMemberForm.firstname.$invalid && !addMemberForm.firstname.$pristine" class="help-block pull-right sv-help-block">Required</span>
+                      <input type="text" class="form-control" name="firstname" placeholder="John" ng-model="addMemberDetails.firstname" required>
+                      <span ng-show="addMemberForm.firstname.$invalid && !addMemberForm.firstname.$pristine" class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                      <span ng-show="addMemberForm.firstname.$valid" class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
+                    </div>
+                  </div>
+                  <div class="col-xs-6">
+                    <div class="form-group" ng-class="{ 'has-error has-feedback' : addMemberForm.lastname.$invalid && !addMemberForm.lastname.$pristine, 'has-success has-feedback' : addMemberForm.lastname.$valid }">
+                      <label class="control-label" for="lastname">Last Name</label>
+                      <span ng-show="addMemberForm.lastname.$invalid && !addMemberForm.lastname.$pristine" class="help-block pull-right sv-help-block">Required</span>
+                      <input type="text" class="form-control" name="lastname" placeholder="Doe" ng-model="addMemberDetails.lastname" required>
+                      <span ng-show="addMemberForm.lastname.$invalid && !addMemberForm.lastname.$pristine" class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                      <span ng-show="addMemberForm.lastname.$valid" class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-6">
+                    <div class="form-group" ng-class="{ 'has-error has-feedback' : addMemberForm.datejoined.$invalid && !addMemberForm.datejoined.$pristine, 'has-success has-feedback' : addMemberForm.datejoined.$valid }">
+                      <label class="control-label" for="datejoined">Date Joined</label>
+                      <span ng-show="addMemberForm.datejoined.$invalid && !addMemberForm.datejoined.$pristine" class="help-block pull-right sv-help-block">Required</span>
+                      <input type="date" class="form-control" name="datejoined" placeholder="" ng-model="addMemberDetails.datejoined" required>
+                      <span ng-show="addMemberForm.datejoined.$invalid && !addMemberForm.datejoined.$pristine" class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                      <span ng-show="addMemberForm.datejoined.$valid" class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
+                    </div>
+                  </div>
+                  <div class="col-xs-6">
+                    <div class="form-group" ng-class="{ 'has-error has-feedback' : !addMemberForm.phone.$pristine && isPhoneValid(addMemberDetails.phone).error, 'has-success has-feedback' : isPhoneValid(addMemberDetails.phone).success, 'has-warning has-feedback' : isPhoneValid(addMemberDetails.phone).warning }">
+                      <label class="control-label" for="phone">Phone</label>
+
+                      <span ng-show="!addMemberForm.phone.$pristine && (isPhoneValid(addMemberDetails.phone).warning || isPhoneValid(addMemberDetails.phone).error)" class="help-block pull-right sv-help-block mobile-hide">10 Digit # Required</span>
+                      
+                      <!-- Input -->
+                      <input type="tel" class="form-control" name="phone" placeholder="8043458798" required ng-model="addMemberDetails.phone" ng-minlength="1" ng-maxlength="10">
+                      
+                      <!-- Invalid -->
+                      <span ng-show="!addMemberForm.phone.$pristine && isPhoneValid(addMemberDetails.phone).error" class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+
+                      <!-- Warning -->
+                      <span ng-show="!addMemberForm.phone.$pristine && isPhoneValid(addMemberDetails.phone).warning" class="glyphicon glyphicon-warning-sign form-control-feedback" aria-hidden="true"></span>
+                      
+                      <!-- Success -->
+                      <span ng-show="!addMemberForm.phone.$pristine && isPhoneValid(addMemberDetails.phone).success" class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
+
+                      <!-- Invalid/Warning text -->
+                      <p ng-show="!addMemberForm.phone.$pristine && (isPhoneValid(addMemberDetails.phone).warning || isPhoneValid(addMemberDetails.phone).error)" class="help-block sv-help-block desktop-hide">10 Digit # Required</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-6">
+                    <label style="margin-bottom: 5px;" ng-class="{ 'text-success' : addMemberDetails.valid != null }">Valid</label>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-6">
+                    <div class="btn-group" role="group" aria-label="..." style="margin-bottom: 30px;">
+                      <button type="button" style="width: 50px;" class="btn btn-default" ng-class="{ 'btn-success disabled' : addMemberDetails.valid == true }" ng-click="addMemberDetails.valid=true;">Yes</button>
+                      <button type="button" style="width: 50px;" class="btn btn-default" ng-class="{ 'btn-danger disabled' : addMemberDetails.valid == false }" ng-click="addMemberDetails.valid=false;">No</button>
+                    </div>
+                  </div>
+                </div>
+                <span class="pull-right">
+                  <span class="text-success" style="vertical-align: middle;">All Fields Required </span><button type="submit" ng-disabled="addMemberForm.$invalid || addMemberDetails.valid == null || !isPhoneValid(addMemberDetails.phone).success" class="btn btn-success">Submit</button>
+                </span>
+                <button type="reset" ng-click="resetAddMemberForm()" class="btn btn-danger pull-left">Reset</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>  
+</body>
+</html>

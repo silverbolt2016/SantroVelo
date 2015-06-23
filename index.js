@@ -48,6 +48,21 @@ server.register({
 
 server.route({
   method: 'GET',
+  path: '/{path*}',
+  config: {
+    handler: {
+      directory: {
+        path: './public',
+        listing: false,
+        index: true
+      }
+    },
+    description: 'Serves static files for web page'
+  }
+});
+
+server.route({
+  method: 'GET',
   path: '/users',
   config: {
     handler: Handlers.userAllGet,
