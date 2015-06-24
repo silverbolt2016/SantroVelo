@@ -14,14 +14,23 @@ santroVeloApp.controller('MainController', function ($scope, $http) {
 
   $scope.addMember = addMember;
   $scope.updateMember = updateMember;
+  $scope.deleteMember = deleteMember;
+  $scope.setMemberToDelete = setMemberToDelete;
 
   $scope.isNumeric = isNumeric;
   $scope.isPhoneValid = isPhoneValid;
   
   $scope.resetAddMemberForm = resetAddMemberForm;
+  $scope.resetEditMemberForm = resetEditMemberForm;
   $scope.setOrderByAttribute = setOrderByAttribute;
 
+  $scope.setEditMemberDetails = setEditMemberDetails;
+  $scope.resetEditMemberDetails = resetEditMemberDetails;
+
   $scope.addMemberDetails = {};
+  $scope.editMemberDetails = {};
+
+  $scope.memberToDelete = {};
 
   $scope.orderByAttribute = '+id';
 
@@ -103,7 +112,8 @@ santroVeloApp.controller('MainController', function ($scope, $http) {
       lastname : $scope.addMemberDetails.lastname,
       datejoined : getDateString($scope.addMemberDetails.datejoined),
       phone : $scope.addMemberDetails.phone,
-      valid : $scope.addMemberDetails.valid
+      valid : $scope.addMemberDetails.valid,
+      amount: $scope.addMemberDetails.amount
     };
 
     var query = getMemberQueryString(newMember);
@@ -128,7 +138,8 @@ santroVeloApp.controller('MainController', function ($scope, $http) {
       lastname : member.lastname,
       datejoined : getDateString(member.datejoined),
       phone : member.phone,
-      valid : member.valid
+      valid : member.valid,
+      amount : member.amount
     };
 
     var query = getMemberQueryString(currMember);
@@ -137,15 +148,47 @@ santroVeloApp.controller('MainController', function ($scope, $http) {
     $http.put(basePath + '/users/' + member.id + database + query).
       success(function(data, status, headers, config) {
         console.log(data);
+
+        if (member.memberRefInList != null) {
+          var index = $scope.members.indexOf(member.memberRefInList);
+          
+          member.datejoinedString = getDateString(member.datejoined);
+          member.validString = getValidString(member.valid);
+          member.phoneString = getPhoneString(member.phone);
+
+          $scope.members[index] = member; 
+
+        }
       }).
       error(function(data, status, headers, config) {
         console.log('Error updateding member');
       });
   }
 
+  function deleteMember(member) {
+    $http.delete(basePath + '/users/' + member.id).
+    success(function(data, status, headers, config) {
+      console.log(data);
+      var index = $scope.members.indexOf(member);
+      if (index > -1) {
+        $scope.members.splice(index, 1);
+      }
+      // remove form memers array
+    }).
+    error(function(data, status, headers, config) {
+      console.log('Deleting user error');
+      console.log(data);
+    });
+  }
+
   function resetAddMemberForm() {
     $scope.addMemberDetails = {};
     $scope.addMemberForm.$setPristine();
+  }
+
+  function resetEditMemberForm() {
+    $scope.editMemberDetails = {};
+    $scope.editMemberForm.$setPristine();
   }
 
   function isPhoneValid(string) {
@@ -227,10 +270,38 @@ santroVeloApp.controller('MainController', function ($scope, $http) {
         }
 
         break;
+
+      case 'amount':
+        if ($scope.orderByAttribute == '+amount') {
+          $scope.orderByAttribute = '-amount';
+        } else if ($scope.orderByAttribute == '-amount') {
+          $scope.orderByAttribute = '+amount';
+        } else {
+          $scope.orderByAttribute = '+amount';
+        }
     }
   }
 
   function isNumeric(string) {
     return !isNaN(string);
+  }
+
+  function setEditMemberDetails(member) {
+    $scope.editMemberDetails = Object.create(member);
+    $scope.editMemberDetails.memberRefInList = member;
+
+    var dateArray = $scope.editMemberDetails.datejoinedString.split('-');
+    $scope.editMemberDetails.datejoined = new Date(dateArray[0], dateArray[1], dateArray[2], 0, 0, 0, 0);
+
+    $scope.editMemberDetails.terms = true;
+    $scope.editMemberDetails.amount = parseFloat($scope.editMemberDetails.amount.split('$')[1]);
+  }
+
+  function setMemberToDelete(member) {
+    $scope.memberToDelete = member;
+  }
+
+  function resetEditMemberDetails() {
+    $scope.editMemberDetails = {};
   }
 });
