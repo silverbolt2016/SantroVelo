@@ -137,6 +137,7 @@ server.route({
         lastname : Joi.string(),
         datejoined : Joi.string().description('e.g. 2015-04-25'),
         phone : Joi.string().length(10).description('e.g. 8043219876'),
+        amount: Joi.string(),
         valid : Joi.boolean()
       }
     }

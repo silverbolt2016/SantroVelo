@@ -26,6 +26,17 @@
   }
 }
 
+@media(min-height: 500px) {
+  .sv-members-panel {
+    height: 69vh !important; 
+    overflow: auto
+  }
+}
+
+.sv-members-panel {
+  height: auto;
+}
+
 .btn-mobile-header {
   height: 50px; 
 }
